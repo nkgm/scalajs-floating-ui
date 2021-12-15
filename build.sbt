@@ -28,7 +28,7 @@ lazy val facade = project
       "com.github.japgolly.scalajs-react" %%% "core"      % scalaJsReact,
     ),
     // shade into another package
-    stOutputPackage         := "io.github.cquiroz.floatingui",
+  stOutputPackage         := "floatingui",
     /* javascript / typescript deps */
     Compile / npmDependencies ++= Seq(
       "@floating-ui/react-dom" -> "0.3.3"

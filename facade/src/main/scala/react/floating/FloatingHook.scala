@@ -1,44 +1,79 @@
 package floating
 
 import japgolly.scalajs.react._
+import floatingui.floatingUiReactDom.mod
+import floatingui.floatingUiReactDom.anon.OmitPartialComputePositio
+import floatingui.floatingUiReactDom.srcMod.UseFloatingReturn
 
 object HooksApiExt {
-// TODO: Replace
-val hook = CustomHook[String]
-  .useEffectOnMountBy(name => Callback.log(s"HELLO $name"))
-  .buildReturning(name => name)
+  val hook1  =
+    CustomHook.unchecked[OmitPartialComputePositio, UseFloatingReturn] { pos =>
+      println(pos.placement); mod.useFloating()
+    }
+  val jsHook = CustomHook.unchecked[OmitPartialComputePositio, UseFloatingReturn] { pos =>
+    val res = mod.useFloating(pos)
+    // res.update()
+    res
+  }
+  val hook =
+    // CustomHook.unsafe
+    CustomHook[OmitPartialComputePositio]
+      // .withHooks[Unit]
+      // .useCallback(())
+      // .useCallback((pos: OmitPartialComputePositio) => mod.useFloating(pos))
+      // .useCallbackWithDeps[OmitPartialComputePositio, UseFloatingReturn](pos)(pos =>
+      //   mod.useFloating(pos)
+      // )
+      // println(pos.placement); mod.useFloating(pos)
+      .buildReturning { pos =>
+        println(pos.placement);
+        val res = mod.useFloating(pos)
+        println("======")
+        println(res.placement)
+        // res.update()
+        println(res.placement)
+        println("---")
+        res
+      }
+  // .buildReturning((p, v) => v.value)
+
   sealed class Primary[Ctx, Step <: HooksApi.AbstractStep](api: HooksApi.Primary[Ctx, Step]) {
 
-    // TODO: Change hook name, input args/type(s), and output type
-    final def useFloating(name: String)(implicit step: Step): step.Next[String] =
-      // TODO: Change hook name
-      useFloatingBy(_ => name)
+    final def useFloating(pos: OmitPartialComputePositio)(implicit
+      step:                    Step
+    ): step.Next[UseFloatingReturn] =
+      useFloatingBy(_ => pos)
 
-    // TODO: Change hook name, input args/type(s), and output type
-    final def useFloatingBy(name: Ctx => String)(implicit step: Step): step.Next[String] =
-      api.customBy(ctx => hook(name(ctx)))
+    final def useFloatingBy(pos: Ctx => OmitPartialComputePositio)(implicit
+      step:                      Step
+    ): step.Next[UseFloatingReturn] =
+      // api.customBy(ctx => mod.useFloating(pos(ctx)))
+      api.customBy(ctx => jsHook(pos(ctx)))
   }
 
-  final class Secondary[Ctx, CtxFn[_], Step <: HooksApi.SubsequentStep[Ctx, CtxFn]](api: HooksApi.Secondary[Ctx, CtxFn, Step]) extends Primary[Ctx, Step](api) {
+  final class Secondary[Ctx, CtxFn[_], Step <: HooksApi.SubsequentStep[Ctx, CtxFn]](
+    api: HooksApi.Secondary[Ctx, CtxFn, Step]
+  ) extends Primary[Ctx, Step](api) {
 
-    // TODO: Change hook name, input args/type(s), and output type
-    def useFloatingBy(name: CtxFn[String])(implicit step: Step): step.Next[String] =
-      // TODO: Change hook name, squash each parameter
-      // useFloatingBy(step.squash(arg1)(_), step.squash(arg2)(_), ...)
-      useFloatingBy(step.squash(name)(_))
+    def useFloatingBy(pos: CtxFn[OmitPartialComputePositio])(implicit
+      step:                Step
+    ): step.Next[UseFloatingReturn] =
+      useFloatingBy(step.squash(pos)(_))
   }
 }
 
 trait HooksApiExt {
   import HooksApiExt._
 
-  // TODO: Change hook name so that it won't conflict with other custom hooks
-  implicit def hooksExtFloating1[Ctx, Step <: HooksApi.AbstractStep](api: HooksApi.Primary[Ctx, Step]): Primary[Ctx, Step] =
+  implicit def hooksExtFloating1[Ctx, Step <: HooksApi.AbstractStep](
+    api: HooksApi.Primary[Ctx, Step]
+  ): Primary[Ctx, Step] =
     new Primary(api)
 
-  // TODO: Change hook name so that it won't conflict with other custom hooks
-  implicit def hooksExtFloating2[Ctx, CtxFn[_], Step <: HooksApi.SubsequentStep[Ctx, CtxFn]](api: HooksApi.Secondary[Ctx, CtxFn, Step]): Secondary[Ctx, CtxFn, Step] =
+  implicit def hooksExtFloating2[Ctx, CtxFn[_], Step <: HooksApi.SubsequentStep[Ctx, CtxFn]](
+    api: HooksApi.Secondary[Ctx, CtxFn, Step]
+  ): Secondary[Ctx, CtxFn, Step] =
     new Secondary(api)
 }
 
-object Implicits extends HooksApiExt
+object implicits extends HooksApiExt

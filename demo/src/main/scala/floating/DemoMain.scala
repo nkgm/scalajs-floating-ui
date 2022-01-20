@@ -6,7 +6,7 @@ import org.scalajs.dom
 import floating.HooksApiExt
 import floating.implicits._
 import floatingui.floatingUiReactDom.anon.OmitPartialComputePositio
-import floatingui.floatingUiCore.typesMod.Placement
+import floatingui.floatingUiCore.typesMod.{BasePlacement, Placement}
 
 import scala.scalajs.js
 import scala.scalajs.js.|
@@ -22,7 +22,7 @@ object DemoMain {
       .withHooks[Unit]
       // .useMemo(())(_ => Ref.toVdom[html.Div])
       // .customBy(pos => HooksApiExt.jsHook(pos))
-      .useFloating(OmitPartialComputePositio().setPlacement(Placement.top))
+      .useFloating(OmitPartialComputePositio().setPlacement(BasePlacement.top))
       .render { (p, h) =>
         // println($.hook1.update())
         // println($.hook1.floating())
@@ -33,7 +33,7 @@ object DemoMain {
         val floatRef = Ref.fromJs(h.refs.floating.asInstanceOf[facade.React.RefHandle[html.Div | Null]])
         // val m: Int = (h.refs.reference)
         // println($.hook1.x)
-        val r = <.div(^.untypedRef := refRef, "Example")
+        val r = <.div(^.untypedRef := refRef, "Exampleee")
         val f = <.div("Float")
         // val f = <.div(^.untypedRef := floatRef, "Float")
         println(s"Plac ${h.placement} ${h.x}")

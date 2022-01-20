@@ -31,7 +31,7 @@ lazy val facade = project
   stOutputPackage         := "floatingui",
     /* javascript / typescript deps */
     Compile / npmDependencies ++= Seq(
-      "@floating-ui/react-dom" -> "0.3.3"
+      "@floating-ui/react-dom" -> "0.4.3"
     ),
     /* disabled because it somehow triggers many warnings */
     scalaJSLinkerConfig ~= (_.withSourceMap(false)),

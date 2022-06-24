@@ -1,6 +1,6 @@
 import org.scalajs.linker.interface.ModuleSplitStyle
 
-val scalaJsReact       = "2.0.0"
+val scalaJsReact = "2.1.1"
 
 /* ScalablyTyped configuration */
 enablePlugins(ScalablyTypedConverterGenSourcePlugin)
@@ -9,6 +9,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(
   Seq(
+    version                       := "nkgm_main",
     homepage                      := Some(url("https://github.com/cquiroz/scalajs-floating-ui")),
     Global / onChangedBuildSource := ReloadOnSourceChanges
   ) ++ lucumaPublishSettings
@@ -23,15 +24,15 @@ lazy val facade = project
   .in(file("facade"))
   .settings(name := "scalajs-floating-ui")
   .settings(
-    crossScalaVersions := Seq("2.13.7", "3.1.0"),
+    crossScalaVersions      := Seq("2.13.7", "3.1.0"),
     libraryDependencies ++= Seq(
-      "com.github.japgolly.scalajs-react" %%% "core"      % scalaJsReact,
+      "com.github.japgolly.scalajs-react" %%% "core" % scalaJsReact
     ),
     // shade into another package
-  stOutputPackage         := "floatingui",
+    stOutputPackage         := "floatingui",
     /* javascript / typescript deps */
     Compile / npmDependencies ++= Seq(
-      "@floating-ui/react-dom" -> "0.4.3"
+      "@floating-ui/react-dom" -> "0.7.2"
     ),
     /* disabled because it somehow triggers many warnings */
     scalaJSLinkerConfig ~= (_.withSourceMap(false)),
@@ -48,7 +49,7 @@ lazy val facade = project
         "-Wunused:explicits"
       )
     )),
-    Compile / doc / sources := Seq(),
+    Compile / doc / sources := Seq()
     // focus only on these libraries
     // stMinimize              := Selection.AllExcept("@svgdotjs/svg.js")
     // stMinimize := Selection.All,
@@ -64,7 +65,7 @@ lazy val demo =
     .settings(
       test            := {},
       libraryDependencies ++= Seq(
-        "com.github.japgolly.scalajs-react" %%% "core"      % scalaJsReact,
+        "com.github.japgolly.scalajs-react" %%% "core" % scalaJsReact
       ),
       Compile / fastLinkJS / scalaJSLinkerConfig ~= { _.withSourceMap(false) },
       Compile / fullLinkJS / scalaJSLinkerConfig ~= { _.withSourceMap(false) },

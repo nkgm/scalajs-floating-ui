@@ -22,7 +22,7 @@ addCommandAlias(
 
 lazy val facade = project
   .in(file("facade"))
-  .settings(name := "scalajs-floating-ui")
+  .settings(name := "scalajs-react-floatingui")
   .settings(
     crossScalaVersions      := Seq("2.13.7", "3.1.0"),
     libraryDependencies ++= Seq(
